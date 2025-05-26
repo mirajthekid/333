@@ -338,6 +338,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle login function - consolidated
     window.handleLogin = function() {
+        // Prevent multiple login attempts
+        if (loginStatus.textContent === 'Connecting to server...') {
+            console.log('Login already in progress');
+            return;
+        }
+        
         // Get and validate username
         username = usernameInput.value.trim();
         console.log(`Login attempt with username: ${username}`);
@@ -766,69 +772,82 @@ function glitchText(text) {
 
 // Connect to WebSocket server with reconnection logic
 function connectToServer() {
+    // Close existing socket if it exists and is not already closed
+    if (socket) {
+        try {
+            if (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING) {
+                console.log('Closing existing WebSocket connection');
+                socket.close();
+            }
+        } catch (e) {
+            console.error('Error closing existing socket:', e);
+        }
+    }
+
     try {
         console.log(`Attempting to connect to WebSocket server at: ${WS_URL}`);
         console.log(`Current protocol: ${window.location.protocol}, hostname: ${window.location.hostname}, port: ${window.location.port}`);
         
         // Create WebSocket connection
         socket = new WebSocket(WS_URL);
-        console.log('WebSocket object created:', socket);
+        console.log('WebSocket object created');
 
         // Connection opened
-        socket.addEventListener('open', (event) => {
+        socket.onopen = (event) => {
             console.log('Connected to WebSocket server');
-            console.log('WebSocket open event:', event);
             // Reset reconnection attempts on successful connection
             reconnectAttempts = 0;
-            reconnectBackoff = 2000; // Reset backoff time
+            reconnectBackoff = 2000;
 
-            // Send login request only if we have a username and are connecting for login purposes
-            if (username && loginStatus.textContent === 'Connecting to server...') {
+            // Only send login request if we have a username and are on the login screen
+            if (username && loginScreen.classList.contains('active')) {
                 console.log(`Sending login request for username: ${username}`);
                 sendLoginRequest();
             } else {
-                console.log(`Not sending login request. Username: ${username}, Status: ${loginStatus.textContent}`);
+                console.log('Connected but not sending login request - no active login attempt');
             }
-        });
+        };
 
         // Listen for messages
-        socket.addEventListener('message', handleSocketMessage);
+        socket.onmessage = handleSocketMessage;
 
         // Connection closed
-        socket.addEventListener('close', (event) => {
+        socket.onclose = (event) => {
             console.log(`WebSocket connection closed. Code: ${event.code}, Reason: ${event.reason}`);
 
-            // Attempt to reconnect if not at max attempts
-            if (reconnectAttempts < maxReconnectAttempts) {
-                reconnectAttempts++;
-                const timeout = reconnectBackoff * Math.pow(2, reconnectAttempts - 1); // Exponential backoff
-                console.log(`Attempting to reconnect (${reconnectAttempts}/${maxReconnectAttempts}) in ${timeout}ms...`);
-                
-                loginStatus.textContent = `Connection lost. Reconnecting (${reconnectAttempts}/${maxReconnectAttempts})...`;
-                loginStatus.style.color = 'var(--notification-color)';
-                
-                setTimeout(() => {
-                    connectToServer();
-                }, timeout);
-            } else {
-                // Max reconnection attempts reached
-                console.log('Maximum reconnection attempts reached. Giving up.');
-                
-                // Show login screen with error message
-                showScreen(loginScreen);
-                loginStatus.textContent = 'Connection lost. Please refresh the page and try again.';
-                loginStatus.style.color = 'var(--error-color)';
-                
-                // Clear any existing data
-                userId = null;
-                roomId = null;
-                partnerUsername = null;
+            // Only attempt to reconnect if we were connected to a chat
+            if (roomId || waitingScreen.classList.contains('active')) {
+                // Attempt to reconnect if not at max attempts
+                if (reconnectAttempts < maxReconnectAttempts) {
+                    reconnectAttempts++;
+                    const timeout = Math.min(reconnectBackoff * Math.pow(2, reconnectAttempts - 1), 30000); // Max 30s
+                    console.log(`Attempting to reconnect (${reconnectAttempts}/${maxReconnectAttempts}) in ${timeout}ms...`);
+                    
+                    updateWaitingStatus(`Connection lost. Reconnecting (${reconnectAttempts}/${maxReconnectAttempts})...`);
+                    
+                    setTimeout(() => {
+                        connectToServer();
+                    }, timeout);
+                } else {
+                    // Max reconnection attempts reached
+                    console.log('Maximum reconnection attempts reached. Giving up.');
+                    
+                    // Show login screen with error message
+                    showScreen(loginScreen);
+                    loginStatus.textContent = 'Connection lost. Please refresh the page and try again.';
+                    loginStatus.style.color = 'var(--error-color)';
+                    
+                    // Clear any existing data
+                    userId = null;
+                    roomId = null;
+                    partnerUsername = null;
+                }
             }
-        });
+        };
         
         // Connection error
-        socket.addEventListener('error', (event) => {
-            console.error('WebSocket error:', event);
+        socket.onerror = (error) => {
+            console.error('WebSocket error:', error);
             // Error handling is done in the close event handler
         });
     } catch (error) {
@@ -886,23 +905,13 @@ function handleLogin() {
 
 // Send login request to server
 function sendLoginRequest() {
-    console.log(`Preparing to send login request for username: ${username}`);
-    try {
-        const loginData = {
-            type: 'login',
-            username: username
-        };
-        const loginJSON = JSON.stringify(loginData);
-        console.log(`Sending login data: ${loginJSON}`);
-        socket.send(loginJSON);
-        console.log('Login request sent successfully');
-    } catch (error) {
-        console.error('Error sending login request:', error);
-        loginStatus.textContent = 'Error sending login request. Please try again.';
-        loginStatus.style.color = 'var(--error-color)';
+    // Clear any existing waiting interval to prevent duplicates
+    if (window.waitingStatusInterval) {
+        clearInterval(window.waitingStatusInterval);
+        window.waitingStatusInterval = null;
     }
-    
-    // Show waiting screen
+
+    // Update UI to show we're connecting
     showScreen(waitingScreen);
     updateWaitingStatus('Establishing secure connection...');
     
@@ -921,18 +930,50 @@ function sendLoginRequest() {
     ];
     
     let messageIndex = 0;
-    const waitingInterval = setInterval(() => {
-        if (!waitingScreen.classList.contains('active')) {
-            clearInterval(waitingInterval);
+    window.waitingStatusInterval = setInterval(() => {
+        if (!waitingScreen.classList.contains('active') || !socket || socket.readyState !== WebSocket.OPEN) {
+            clearInterval(window.waitingStatusInterval);
             return;
         }
         
         messageIndex = (messageIndex + 1) % waitingMessages.length;
         updateWaitingStatus(waitingMessages[messageIndex]);
     }, 3000);
-    
-    // Store the interval ID to clear it when needed
-    window.waitingStatusInterval = waitingInterval;
+
+    // Only send login if we have a socket and it's open
+    if (socket && socket.readyState === WebSocket.OPEN) {
+        try {
+            console.log(`Sending login request for username: ${username}`);
+            const loginData = {
+                type: 'login',
+                username: username,
+                timestamp: Date.now()
+            };
+            socket.send(JSON.stringify(loginData));
+            console.log('Login request sent successfully');
+        } catch (error) {
+            console.error('Error sending login request:', error);
+            showScreen(loginScreen);
+            loginStatus.textContent = 'Error sending login request. Please try again.';
+            loginStatus.style.color = 'var(--error-color)';
+            
+            // Clear any waiting interval on error
+            if (window.waitingStatusInterval) {
+                clearInterval(window.waitingStatusInterval);
+                window.waitingStatusInterval = null;
+            }
+        }
+    } else {
+        console.error('Cannot send login: WebSocket is not connected');
+        showScreen(loginScreen);
+        loginStatus.textContent = 'Connection error. Please refresh and try again.';
+        loginStatus.style.color = 'var(--error-color)';
+        
+        if (window.waitingStatusInterval) {
+            clearInterval(window.waitingStatusInterval);
+            window.waitingStatusInterval = null;
+        }
+    }
 }
 
 // Handle cancel search
@@ -987,31 +1028,28 @@ function handleSocketMessage(event) {
                 updateOnlineUsersDisplay();
                 break;
             case 'login_success':
-                userId = data.userId;
-                console.log('Login successful, userId:', userId);
-                console.log('Full login success data:', data);
-                
-                // Set verification flag in session storage with a timestamp
-                const authData = {
-                    verified: true,
-                    timestamp: Date.now(),
-                    userId: userId
-                };
-                sessionStorage.setItem('userVerified', 'true');
-                sessionStorage.setItem('authData', JSON.stringify(authData));
-                
-                // Check for redirect URL in session storage
-                const redirectUrl = sessionStorage.getItem('redirectAfterLogin');
-                
-                if (redirectUrl) {
-                    // Clear the redirect URL to prevent loops
-                    sessionStorage.removeItem('redirectAfterLogin');
-                    // Redirect to the originally requested URL
-                    window.location.href = redirectUrl;
-                } else {
-                    // Default to showing waiting screen
+                // Only process if we don't have a user ID yet or we're on the login/waiting screen
+                if (!userId && (loginScreen.classList.contains('active') || waitingScreen.classList.contains('active'))) {
+                    userId = data.userId;
+                    console.log('Login successful, userId:', userId);
+                    
+                    // Set verification flag in session storage with a timestamp
+                    const authData = {
+                        verified: true,
+                        timestamp: Date.now(),
+                        userId: userId
+                    };
+                    sessionStorage.setItem('userVerified', 'true');
+                    sessionStorage.setItem('authData', JSON.stringify(authData));
+                    
+                    // Always go to waiting screen on successful login
                     showScreen(waitingScreen);
                     updateWaitingStatus('Waiting for a partner...');
+                    
+                    // Clear any previous error messages
+                    loginStatus.textContent = '';
+                } else {
+                    console.log('Received duplicate login_success, ignoring');
                 }
                 break;
                 
