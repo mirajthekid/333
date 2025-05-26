@@ -508,7 +508,7 @@ function handleMatch(data) {
     showScreen(chatScreen);
     
     // Display system message about the match with country flag
-    displayMessage(`Connected with ${partnerUsername}`, null, 'system', null, partnerCountry);
+    showSystemMessage(`Connected with ${partnerUsername}`, partnerCountry);
     
     // Clear any previous messages
     // chatMessages.innerHTML = '';
@@ -965,8 +965,9 @@ function handleSocketMessage(event) {
                 // Clear previous messages
                 chatMessages.innerHTML = '';
                 
-                // Show system message
-                showSystemMessage(`You are now chatting with ${partnerUsername}`);
+                // Show system message with country flag
+                const partnerCountry = data.partnerCountry || 'us'; // Default to US flag if no country is provided
+                showSystemMessage(`You are now chatting with ${partnerUsername}`, partnerCountry);
                 
                 // Auto-focus message input
                 messageInput.focus();
@@ -1241,9 +1242,16 @@ function displayMessage(content, sender, type = 'message', timestamp = null) {
     }, 10);
 }
 
-// Show system message
-function showSystemMessage(message, countryCode) {
-    displayMessage(message, null, 'system', null, countryCode);
+// Show system message with optional country flag
+function showSystemMessage(message, countryCode = null) {
+    let displayContent = message;
+    
+    // Add country flag if provided and this is a connection message
+    if (countryCode && message && (message.startsWith('Connected with') || message.startsWith('You are now chatting with'))) {
+        displayContent = `${message} <span class="flag-icon" style="display: inline-block; width: 16px; height: 12px; background: url('https://flagcdn.com/16x12/${countryCode.toLowerCase()}.png') no-repeat center/contain; vertical-align: middle; margin-left: 5px;"></span>`;
+    }
+    
+    displayMessage(displayContent, null, 'system');
 }
 
 // Handle typing event
