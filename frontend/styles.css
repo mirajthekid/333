@@ -1,11 +1,12 @@
 /* Country Flag Styles */
 .country-flag {
     display: inline-block;
-    margin-left: 5px;
     vertical-align: middle;
-    border: 1px solid rgba(0,0,0,0.1);
-    border-radius: 2px;
-    box-shadow: 0 0 1px rgba(0,0,0,0.2);
+    margin-left: 5px; /* Space between username/text and flag */
+    width: 20px;      /* Adjust width as needed */
+    height: 15px;     /* Adjust height for aspect ratio, e.g., 4:3 */
+    border: 1px solid #444; /* Optional: a subtle border around the flag */
+    background-color: #222; /* Optional: a slight background if images are slow to load */
 }
 
 /* Base styles */
