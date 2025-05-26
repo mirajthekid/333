@@ -15,12 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
             skipBtn.textContent = 'SKIP';
         }
         
-        // Remove the static swipe instruction div since we'll add it dynamically
-        const staticSwipeInstruction = document.querySelector('.swipe-instruction');
-        if (staticSwipeInstruction) {
-            staticSwipeInstruction.remove();
-        }
-        
         // Modify the 'You are now chatting with' message on mobile
         const chatMessages = document.getElementById('chat-messages');
         
@@ -35,13 +29,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             node.classList.contains('system') && 
                             node.textContent.includes('You are now chatting with')) {
                             
-                            // Modify the message to include swipe instruction with flag
+                            // Modify the message to include swipe instruction
                             const originalText = node.textContent;
-                            if (!originalText.includes('Swipe left to skip')) {
-                                // Get the flag emoji for the current user
-                                const flag = getFlagEmoji(window.userCountryCode || 'XX');
-                                node.textContent = `${originalText} ${flag} Swipe left to skip`;
-                            }
+                            node.textContent = originalText + '. Swipe left to skip';
                             break;
                         }
                     }
@@ -58,8 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
             existingMessages.forEach(msg => {
                 if (msg.textContent.includes('You are now chatting with') && 
                     !msg.textContent.includes('Swipe left to skip')) {
-                    // The flag will be added by country-flags.js
-                    msg.textContent = `${msg.textContent} Swipe left to skip`;
+                    msg.textContent = msg.textContent + '. Swipe left to skip';
                 }
             });
         }

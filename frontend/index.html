@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, height=device-height, viewport-fit=cover">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net; connect-src 'self' ws: wss: https://ipapi.co; script-src 'self' 'unsafe-inline' https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://www.googletagservices.com https://www.google.com https://www.google.co.uk https://www.google.com.tr https://www.google.com.sa https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://pagead2.googlesyndication.com https://www.google-analytics.com https://www.googletagmanager.com https://www.googleadservices.com https://www.google.com https://stats.g.doubleclick.net https://www.google.com.tr https://www.google.com.sa https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://pagead2.googlesyndication.com https://www.google-analytics.com https://www.googletagmanager.com https://www.googleadservices.com https://www.google.com https://stats.g.doubleclick.net;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net; connect-src 'self' ws: wss:; script-src 'self' 'unsafe-inline' https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://www.googletagservices.com https://www.google.com https://www.google.co.uk https://www.google.com.tr https://www.google.com.sa https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://pagead2.googlesyndication.com https://www.google-analytics.com https://www.googletagmanager.com https://www.googleadservices.com https://www.google.com https://stats.g.doubleclick.net https://www.google.com.tr https://www.google.com.sa https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://pagead2.googlesyndication.com https://www.google-analytics.com https://www.googletagmanager.com https://www.googleadservices.com https://www.google.com https://stats.g.doubleclick.net;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="Referrer-Policy" content="no-referrer">
@@ -18,62 +18,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Authentication check script -->
-    <script src="auth-check.js" defer></script>
-    <style>
-        /* Footer Styles */
-        .site-footer {
-            background-color: #000;
-            color: #777;
-            padding: 20px 0;
-            font-size: 14px;
-            border-top: 1px solid #222;
-            position: relative;
-            z-index: 100;
-        }
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            text-align: center;
-        }
-        .footer-links {
-            margin-bottom: 10px;
-        }
-        .footer-links a {
-            color: #00aaff;
-            text-decoration: none;
-            margin: 0 10px;
-            transition: color 0.3s ease;
-        }
-        .footer-links a:hover {
-            color: #fff;
-            text-decoration: underline;
-        }
-        .copyright {
-            color: #555;
-            font-size: 12px;
-        }
-        
-        /* Ad Container */
-        .ad-container {
-            margin: 20px auto;
-            text-align: center;
-            padding: 10px;
-            background: #111;
-            border: 1px solid #222;
-            border-radius: 4px;
-            max-width: 100%;
-            overflow: hidden;
-        }
-        .ad-label {
-            font-size: 10px;
-            color: #666;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-            letter-spacing: 1px;
-        }
-    </style>
 </head>
 <body>
     <div class="terminal">
@@ -82,13 +26,13 @@
         
         <!-- Login Screen -->
         <div id="login-screen" class="terminal-screen active">
-            <form id="login-form" class="login-container">
+            <div class="login-container">
                 <div class="terminal-prompt-row">
                     <span class="prompt-text">enter username:</span>
-                    <input type="text" id="username-input" class="terminal-input" maxlength="15" autocomplete="off" placeholder="" inputmode="text" enterkeyhint="go" autofocus required>
+                    <input type="text" id="username-input" class="terminal-input" maxlength="15" autocomplete="off" placeholder="" inputmode="text" enterkeyhint="go" autofocus>
                 </div>
                 <div class="login-status" id="login-status"></div>
-            </form>
+            </div>
         </div>
         
         <!-- Waiting Screen -->
@@ -109,20 +53,7 @@
                     <span class="connection-label">ONLINE TYPERS:</span>
                 </div>
             </div>
-            <!-- Top Ad -->
-            <div class="ad-container" style="margin: 10px 0; padding: 5px;">
-                <div class="ad-label">Advertisement</div>
-                <!-- AdSense Ad Unit -->
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-5950004957840223"
-                     data-ad-slot="1234567890"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
-            </div>
+            
             <div id="chat-messages" class="chat-messages"></div>
             
             <!-- Fixed typing indicator that will be shown/hidden via JavaScript -->
@@ -134,21 +65,6 @@
             </div>
             
             <!-- Chat input container -->
-            <!-- Bottom Ad -->
-            <div class="ad-container" style="margin: 15px 0 5px; padding: 5px;">
-                <div class="ad-label">Advertisement</div>
-                <!-- AdSense Ad Unit -->
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-5950004957840223"
-                     data-ad-slot="0987654321"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
-            </div>
-            
             <div id="chat-input-container" class="chat-input-container">
                 <!-- Input will be added dynamically -->
             </div>
@@ -171,28 +87,9 @@
     
     <script src="utils.js"></script>
     <script src="scripts.js"></script>
-    <script src="chat-flags.js"></script>
+    <script src="country-flags.js"></script>
     <script src="minimal_typing_fix.js"></script>
     <script src="swipe-to-skip.js"></script>
     <script src="mobile-adjustments.js"></script>
-    
-    <!-- Footer -->
-    <footer class="site-footer">
-        <div class="footer-content">
-            <div class="footer-links">
-                <a href="/privacy.html">Privacy Policy</a>
-                <a href="/terms.html">Terms of Service</a>
-                <a href="/about.html">About Us</a>
-                <a href="mailto:support@typeshi.fun">Contact</a>
-            </div>
-            <div class="copyright">
-                &copy; 2024 typeshi.fun. All rights reserved.
-            </div>
-        </div>
-    </footer>
-    
-    <!-- AdSense Auto Ads -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5950004957840223"
-     crossorigin="anonymous"></script>
 </body>
 </html>
