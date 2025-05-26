@@ -1182,7 +1182,7 @@ function displayMessage(content, sender, type = 'message', timestamp = null) {
     if (type === 'system') {
         // System messages with country code support
         let displayContent = content;
-        if (countryCode && content.startsWith('Connected with')) {
+        if (countryCode !== undefined && content && content.startsWith('Connected with')) {
             displayContent = `${content} <span class="flag-icon" style="display: inline-block; width: 16px; height: 12px; background: url('https://flagcdn.com/16x12/${countryCode.toLowerCase()}.png') no-repeat center/contain; vertical-align: middle; margin-left: 5px;"></span>`;
         }
         messageDiv.innerHTML = displayContent; // Use innerHTML for system messages to support formatting
@@ -1242,8 +1242,8 @@ function displayMessage(content, sender, type = 'message', timestamp = null) {
 }
 
 // Show system message
-function showSystemMessage(message) {
-    displayMessage(message, null, 'system');
+function showSystemMessage(message, countryCode) {
+    displayMessage(message, null, 'system', null, countryCode);
 }
 
 // Handle typing event
