@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flag Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-message {
+            background: #f5f5f5;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .flag {
+            font-size: 1.5em;
+            margin: 0 5px;
+            vertical-align: middle;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Country Flag Test Page</h1>
+    
+    <div class="test-message">
+        <h3>Test 1: Script Loading</h3>
+        <div id="test1">
+            <p>Checking if script loads...</p>
+        </div>
+    </div>
+    
+    <div class="test-message">
+        <h3>Test 2: Emoji Support</h3>
+        <div id="test2">
+            <p>Testing emoji display: <span id="emoji-test"></span></p>
+        </div>
+    </div>
+    
+    <div class="test-message">
+        <h3>Test 3: Browser Language Detection</h3>
+        <div id="test3">
+            <p>Detected language: <span id="language-display"></span></p>
+        </div>
+    </div>
+    
+    <div class="test-message">
+        <h3>Test 4: Timezone Detection</h3>
+        <div id="test4">
+            <p>Detected timezone: <span id="timezone-display"></span></p>
+        </div>
+    </div>
+    
+    <div class="test-message">
+        <h3>Test 5: Manual Flag Test</h3>
+        <div id="test5">
+            <p>You are now chatting with <span id="username">TestUser</span></p>
+        </div>
+    </div>
+
+    <script>
+        // Test 1: Script Loading
+        document.getElementById('test1').innerHTML = 
+            '<p class="success">✅ Script loaded successfully!</p>';
+        
+        // Test 2: Emoji Support
+        const emojiTest = document.getElementById('emoji-test');
+        emojiTest.textContent = '🇹🇷 Turkey';
+        emojiTest.innerHTML += ' <span class="flag">🇹🇷</span>';
+        document.getElementById('test2').innerHTML += 
+            '<p class="success">✅ Emoji test complete</p>';
+        
+        // Test 3: Browser Language
+        try {
+            const language = navigator.language || navigator.userLanguage || 'en-US';
+            document.getElementById('language-display').textContent = language;
+            document.getElementById('test3').innerHTML += 
+                '<p class="success">✅ Language detected</p>';
+        } catch (e) {
+            document.getElementById('test3').innerHTML += 
+                `<p class="error">❌ Error: ${e.message}</p>`;
+        }
+        
+        // Test 4: Timezone
+        try {
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown';
+            document.getElementById('timezone-display').textContent = timezone;
+            document.getElementById('test4').innerHTML += 
+                '<p class="success">✅ Timezone detected</p>';
+        } catch (e) {
+            document.getElementById('test4').innerHTML += 
+                `<p class="error">❌ Error: ${e.message}</p>`;
+        }
+        
+        // Test 5: Manual Flag Test
+        try {
+            const username = document.getElementById('username');
+            const flagSpan = document.createElement('span');
+            flagSpan.className = 'flag';
+            flagSpan.textContent = '🇹🇷';
+            username.parentNode.insertBefore(flagSpan, username.nextSibling);
+            document.getElementById('test5').innerHTML += 
+                '<p class="success">✅ Test flag added successfully</p>';
+        } catch (e) {
+            document.getElementById('test5').innerHTML += 
+                `<p class="error">❌ Error: ${e.message}</p>`;
+        }
+    </script>
+</body>
+</html>

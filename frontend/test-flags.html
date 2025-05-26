@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flag Test</title>
+    <style>
+        .country-flag {
+            display: inline-block;
+            margin-left: 4px;
+            font-size: 1.5em;
+            line-height: 1;
+            vertical-align: middle;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .test-message {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Country Flag Test</h1>
+    
+    <div class="test-message">
+        <p>You are now chatting with <span id="test-username">TestUser</span></p>
+    </div>
+    
+    <div id="test-results">
+        <h3>Test Results:</h3>
+        <div id="results"></div>
+    </div>
+    
+    <script>
+        // Simple mapping of country codes to flag emojis
+        const flagEmojis = {
+            'us': '🇺🇸', 'gb': '🇬🇧', 'ca': '🇨🇦', 'au': '🇦🇺', 'de': '🇩🇪',
+            'fr': '🇫🇷', 'it': '🇮🇹', 'es': '🇪🇸', 'jp': '🇯🇵', 'kr': '🇰🇷',
+            'cn': '🇨🇳', 'in': '🇮🇳', 'br': '🇧🇷', 'ru': '🇷🇺', 'tr': '🇹🇷',
+            'sa': '🇸🇦', 'ae': '🇦🇪', 'eg': '🇪🇬', 'za': '🇿🇦', 'ng': '🇳🇬'
+        };
+        
+        function logResult(testName, success) {
+            const resultDiv = document.createElement('div');
+            resultDiv.textContent = `${testName}: ${success ? '✅' : '❌'}`;
+            document.getElementById('results').appendChild(resultDiv);
+        }
+        
+        // Test 1: Check if script is running
+        logResult('Script loaded', true);
+        
+        // Test 2: Check if emojis are supported
+        const emojiTest = '🇺🇸';
+        logResult('Emoji support', emojiTest.length > 0);
+        
+        // Test 3: Add a test flag
+        try {
+            const username = document.getElementById('test-username');
+            const flagSpan = document.createElement('span');
+            flagSpan.className = 'country-flag';
+            flagSpan.textContent = ' 🇹🇷';
+            username.parentNode.insertBefore(flagSpan, username.nextSibling);
+            logResult('Flag added to DOM', true);
+        } catch (e) {
+            logResult('Flag added to DOM', false);
+            console.error('Error adding test flag:', e);
+        }
+        
+        // Test 4: Detect browser language
+        try {
+            const language = navigator.language || navigator.userLanguage || 'en-US';
+            const parts = language.split('-');
+            const countryCode = parts.length > 1 ? parts[1].toLowerCase() : 'unknown';
+            logResult(`Browser language: ${language} (${countryCode})`, true);
+        } catch (e) {
+            logResult('Browser language detection', false);
+        }
+        
+        // Test 5: Try to detect timezone
+        try {
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'unknown';
+            logResult(`Timezone: ${timezone}`, true);
+        } catch (e) {
+            logResult('Timezone detection', false);
+        }
+    </script>
+</body>
+</html>

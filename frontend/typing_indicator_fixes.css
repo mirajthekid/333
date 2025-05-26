@@ -1,0 +1,10 @@
+/* Typing indicator active state */
+.typing-indicator.active {
+    display: block !important; /* Force display when active */
+}
+
+/* Ensure typing text is visible */
+#typing-text {
+    color: var(--accent-color, #00aaff); /* Fallback color if variable not available */
+    margin-left: 5px;
+}

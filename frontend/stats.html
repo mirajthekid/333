@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net; script-src 'self' 'unsafe-inline' https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://www.googletagservices.com https://www.google.com https://www.google.co.uk https://www.google.com.tr https://www.google.com.sa https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://pagead2.googlesyndication.com https://www.google-analytics.com https://www.googletagmanager.com https://www.googleadservices.com https://www.google.com https://stats.g.doubleclick.net;">
+  <meta http-equiv="X-Content-Type-Options" content="nosnof">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="Referrer-Policy" content="no-referrer">
+  <title>typeshi.fun | Live Chat Statistics - Talk To Strangers Online!</title>
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5950004957840223" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+      line-height: 1.6;
+    }
+    .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+    }
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
+    .stat-card {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #3498db;
+      margin: 0.5rem 0;
+    }
+    .stat-label {
+      color: #7f8c8d;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .chart-container {
+      position: relative;
+      margin: 2rem 0;
+      height: 400px;
+    }
+    .table-responsive {
+      margin-top: 2rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+    .table {
+      margin-bottom: 0;
+    }
+    .table th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+    }
+    .last-updated {
+      color: #7f8c8d;
+      font-size: 0.9rem;
+      text-align: right;
+      margin-top: 1rem;
+    }
+    .badge-country {
+      font-size: 0.8rem;
+      padding: 0.4em 0.6em;
+      border-radius: 4px;
+      background-color: #e3f2fd;
+      color: #1976d2;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1>📊 Visitor Statistics</h1>
+      <div class="last-updated">Last updated: <span id="lastUpdated">-</span></div>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-6">
+        <div class="stat-card">
+          <div class="stat-label">Total Visitors</div>
+          <div class="stat-number" id="totalVisitors">0</div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="stat-card">
+          <div class="stat-label">Unique Days Tracked</div>
+          <div class="stat-number" id="daysTracked">0</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="chart-container">
+      <canvas id="visitsChart"></canvas>
+    </div>
+    
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Visits</th>
+            <th>Countries</th>
+          </tr>
+        </thead>
+        <tbody id="visitsTableBody">
+          <!-- Filled by JavaScript -->
+        </tbody>
+      </table>
+    </div>
+    
+    <a href="/" class="btn btn-primary mt-3">← Back to App</a>
+  </div>
+
+  <script>
+    const SECRET_KEY = 'xd-stats-2024-secure-key-9876';
+    let visitsChart = null;
+
+    // Get key from URL or localStorage
+    function getKey() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const key = urlParams.get('key') || localStorage.getItem('visitorStatsKey');
+      if (key) {
+        localStorage.setItem('visitorStatsKey', key);
+        return key;
+      }
+      return null;
+    }
+
+    // Format date
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+      });
+    }
+
+    // Update chart
+    function updateChart(dailyVisits) {
+      const ctx = document.getElementById('visitsChart').getContext('2d');
+      const dates = Object.keys(dailyVisits).sort();
+      const counts = dates.map(date => dailyVisits[date].count);
+      
+      // Destroy previous chart if it exists
+      if (visitsChart) {
+        visitsChart.destroy();
+      }
+      
+      visitsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: dates.map(date => formatDate(date)),
+          datasets: [{
+            label: 'Visits',
+            data: counts,
+            backgroundColor: 'rgba(52, 152, 219, 0.7)',
+            borderColor: 'rgba(52, 152, 219, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                precision: 0
+              }
+            }
+          },
+          plugins: {
+            title: {
+              display: true,
+              text: 'Daily Visitor Count',
+              font: {
+                size: 16
+              }
+            },
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+    }
+
+
+    // Update table
+    function updateTable(dailyVisits) {
+      const tbody = document.getElementById('visitsTableBody');
+      tbody.innerHTML = '';
+      
+      // Sort dates in descending order (newest first)
+      const sortedDates = Object.keys(dailyVisits).sort((a, b) => new Date(b) - new Date(a));
+      
+      sortedDates.forEach(date => {
+        const stats = dailyVisits[date];
+        const row = document.createElement('tr');
+        
+        // Format countries
+        let countriesHtml = '';
+        if (stats.countryStats) {
+          const countries = Object.entries(stats.countryStats)
+            .sort((a, b) => b[1] - a[1])
+            .map(([country, count]) => 
+              `<span class="badge-country">${country}: ${count}</span>`
+            )
+            .join('');
+          countriesHtml = countries || 'No country data';
+        } else {
+          countriesHtml = 'No country data';
+        }
+        
+        row.innerHTML = `
+          <td>${formatDate(date)}</td>
+          <td>${stats.count.toLocaleString()}</td>
+          <td>${countriesHtml}</td>
+        `;
+        
+        tbody.appendChild(row);
+      });
+    }
+
+    // Load stats
+    async function loadStats() {
+      const key = getKey();
+      if (!key) {
+        window.location.href = '/';
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/secret-stats?key=${encodeURIComponent(key)}`);
+        if (!response.ok) {
+          throw new Error('Failed to load stats');
+        }
+        const data = await response.json();
+        
+        // Update stats
+        document.getElementById('totalVisitors').textContent = data.totalVisitors.toLocaleString();
+        document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
+        
+        // Update chart if we have daily data
+        if (data.dailyVisits) {
+          updateChart(data.dailyVisits);
+          updateTable(data.dailyVisits);
+          document.getElementById('daysTracked').textContent = Object.keys(data.dailyVisits).length;
+        } else if (data.countryStats) {
+          // Fallback to old format if dailyVisits doesn't exist
+          const today = new Date().toISOString().split('T')[0];
+          const dailyData = {
+            [today]: {
+              count: data.totalVisitors,
+              countryStats: data.countryStats
+            }
+          };
+          updateChart(dailyData);
+          updateTable(dailyData);
+          document.getElementById('daysTracked').textContent = '1';
+        }
+      } catch (error) {
+        console.error('Error loading stats:', error);
+        alert('Failed to load visitor statistics. Please try again later.');
+      }
+    }
+
+    // Load stats when page loads
+    document.addEventListener('DOMContentLoaded', loadStats);
+  </script>
+
+  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

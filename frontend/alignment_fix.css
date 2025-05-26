@@ -1,0 +1,122 @@
+/* Swap positions of skip button and connection info */
+#chat-screen .chat-header {
+    display: flex;
+    flex-direction: row-reverse; /* Reverse the order of elements */
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 15px;
+}
+
+/* Ensure skip button is properly aligned */
+#skip-btn {
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+}
+
+/* Ensure connection info is properly aligned */
+.connection-info {
+    display: flex;
+    align-items: center;
+    height: 28px;
+}
+
+/* Ensure status indicator is properly aligned */
+.status-indicator {
+    margin: 0;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Ensure connection label is properly aligned */
+.connection-label {
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    margin-left: 5px;
+}
+
+/* Restore original font */
+* {
+    font-family: 'JetBrains Mono', monospace !important;
+}
+
+/* Fix for the status indicator */
+.status-indicator {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* Fix for connection label */
+.connection-label {
+    display: flex;
+    align-items: center;
+    height: 28px;
+    line-height: 28px;
+}
+
+/* Remove any Content Security Policy that might be affecting font loading */
+meta[http-equiv="Content-Security-Policy"] {
+    content: "default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' ws: wss:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:;";
+}
+
+/* Username input styling */
+#login-screen .prompt-text {
+    margin-right: 5px; /* Small gap */
+    font-size: 0.9rem; /* Slightly smaller text */
+}
+
+#login-screen #username-input {
+    margin-left: 0;
+    max-width: 120px; /* Reduce width by approximately half */
+    width: 120px; /* Set explicit width */
+    font-size: 0.9rem; /* Slightly smaller text */
+}
+
+/* Improve chat messages container */
+#chat-messages {
+    /* Hide scrollbar on desktop while maintaining scroll functionality */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    overflow-y: auto;
+    padding-bottom: 20px; /* Add padding at the bottom to prevent messages from getting too close to the input */
+    max-height: calc(100vh - 180px); /* Ensure it doesn't overflow the viewport */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+#chat-messages::-webkit-scrollbar {
+    display: none;
+}
+
+/* Improve message spacing and organization */
+#chat-messages .message {
+    margin-bottom: 8px; /* Add consistent spacing between messages */
+    padding: 4px 8px; /* Add some padding inside each message */
+    border-radius: 2px; /* Subtle rounded corners */
+    max-width: 90%; /* Prevent messages from stretching too wide */
+}
+
+/* Ensure messages don't get too close to the skip button */
+#chat-screen .chat-header {
+    margin-bottom: 15px; /* Add space between header and messages */
+}
+
+/* Restore default cursor behavior */
+input, textarea, [contenteditable="true"] {
+    caret-color: var(--accent-color, #00ff00); /* Use accent color for cursor */
+}
+
+/* Swipe-to-skip animation */
+@keyframes swipe-left-animation {
+    0% { transform: translateX(0); opacity: 1; }
+    100% { transform: translateX(-30px); opacity: 0.7; }
+}
+
+/* Class applied during swipe gesture */
+.swiping-left {
+    animation: swipe-left-animation 0.3s ease-out;
+}
+
+/* No longer needed - removed separate swipe instruction styling */

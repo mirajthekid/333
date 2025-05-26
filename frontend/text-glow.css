@@ -1,0 +1,86 @@
+/* Text Glow Effect for White and Blue Text */
+@font-face {
+    font-family: 'ApostropheFix';
+    src: local('Arial'), local('Helvetica'), local('sans-serif');
+    unicode-range: U+0027; /* Target only the apostrophe character */
+}
+
+/* White text glow effect */
+.terminal, .terminal-screen, .chat-messages, .message-content, .prompt-text, 
+.status-message, .connection-label, .skip-message, .skip-instructions,
+.login-status, .terminal-prompt-row, .terminal-prompt, .terminal-header,
+.chat-header, #typing-text, .countdown, .message-sender {
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.7), 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Remove glow from red text */
+[style*="color: #ff3333"], [style*="color: var(--error-color)"],
+.message.error, .error-message, .message.system[style*="color: red"] {
+    text-shadow: none !important;
+}
+
+/* Reduced glow for grey text */
+[style*="color: #888"], [style*="color: #aaaaaa"], [style*="color: var(--notification-color)"],
+.connection-label, .message-timestamp, .status-message, #typing-text,
+.message.system:not([style*="color: red"]) {
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.3), 0 0 4px rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Blue text glow effect (for accent colored elements) */
+.prompt-symbol, .status-indicator, #skip-btn, .terminal-btn,
+.terminal-btn-minimal, .terminal-input:not(:placeholder-shown),
+.chat-message-input:not(:placeholder-shown), .message.outgoing .message-sender,
+[style*="color: #00aaff"], [style*="color: var(--accent-color)"],
+#typing-indicator, .typing-indicator, .typing-dot, #typing-text, .connection-info .status-indicator {
+    text-shadow: 0 0 5px rgba(0, 170, 255, 0.7), 0 0 10px rgba(0, 170, 255, 0.5);
+}
+
+/* Enhanced glow for interactive elements on hover */
+.terminal-btn:hover, .terminal-btn-minimal:hover, #skip-btn:hover, 
+.cancel-skip-btn:hover {
+    text-shadow: 0 0 8px rgba(0, 170, 255, 0.9), 0 0 15px rgba(0, 170, 255, 0.7);
+}
+
+/* Specific enhanced glow for skip button */
+#skip-btn {
+    text-shadow: 0 0 8px rgba(0, 170, 255, 0.8), 0 0 15px rgba(0, 170, 255, 0.6) !important;
+}
+
+/* Enhanced glow for skip button on mobile */
+@media (max-width: 768px) {
+    #skip-btn, .terminal-btn.small {
+        text-shadow: 0 0 10px rgba(0, 170, 255, 0.9), 0 0 20px rgba(0, 170, 255, 0.7), 0 0 30px rgba(0, 170, 255, 0.5) !important;
+        color: #33bbff !important; /* Brighter blue color for better visibility */
+        font-weight: bold !important;
+    }
+}
+
+/* Swipe instruction for mobile - hidden as requested */
+.swipe-instruction {
+    display: none !important;
+}
+
+/* Pulsing glow animation for special elements */
+@keyframes pulseGlow {
+    0% { text-shadow: 0 0 5px rgba(0, 170, 255, 0.7), 0 0 10px rgba(0, 170, 255, 0.5); }
+    50% { text-shadow: 0 0 10px rgba(0, 170, 255, 0.9), 0 0 20px rgba(0, 170, 255, 0.7); }
+    100% { text-shadow: 0 0 5px rgba(0, 170, 255, 0.7), 0 0 10px rgba(0, 170, 255, 0.5); }
+}
+
+/* Fix for typing indicator display */
+#typing-indicator.active, .typing-indicator.active {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Ensure typing dots are visible */
+.typing-dot {
+    background-color: var(--accent-color) !important;
+    box-shadow: 0 0 5px rgba(0, 170, 255, 0.7), 0 0 10px rgba(0, 170, 255, 0.5);
+}
+
+/* Apply pulsing glow animation */
+.typing-indicator.active, .status-indicator, #typing-indicator.active {
+    animation: pulseGlow 2s infinite;
+}

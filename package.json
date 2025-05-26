@@ -1,0 +1,25 @@
+{
+  "name": "ephemeral-chat",
+  "version": "1.0.0",
+  "description": "Anonymous ephemeral chat application",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "cd backend && npm start",
+    "install": "cd backend && npm install",
+    "dev": "cd backend && npm run dev"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "keywords": [
+    "chat",
+    "websocket",
+    "anonymous",
+    "ephemeral"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "recharts": "^2.15.3"
+  }
+}

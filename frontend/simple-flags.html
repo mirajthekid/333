@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Flag Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .flag {
+            width: 24px;
+            height: 18px;
+            margin: 0 5px;
+            vertical-align: middle;
+            border: 1px solid #ddd;
+            border-radius: 2px;
+        }
+        .test-message {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Simple Flag Test</h1>
+    
+    <div class="test-message">
+        <p>You are now chatting with <span id="username">TestUser</span></p>
+    </div>
+    
+    <div id="test-results">
+        <h3>Test Results:</h3>
+        <div id="results"></div>
+    </div>
+    
+    <script>
+        // Simple function to add a flag
+        function addFlag(username, countryCode) {
+            const flagImg = document.createElement('img');
+            flagImg.src = `https://flagcdn.com/24x18/${countryCode}.png`;
+            flagImg.alt = countryCode.toUpperCase();
+            flagImg.title = `From ${countryCode.toUpperCase()}`;
+            flagImg.className = 'flag';
+            
+            const usernameElement = document.getElementById(username);
+            if (usernameElement) {
+                usernameElement.parentNode.insertBefore(flagImg, usernameElement.nextSibling);
+                logResult(`Flag for ${countryCode} added successfully`, true);
+            } else {
+                logResult('Could not find username element', false);
+            }
+        }
+        
+        function logResult(message, success) {
+            const resultDiv = document.createElement('div');
+            resultDiv.textContent = message;
+            resultDiv.style.color = success ? 'green' : 'red';
+            resultDiv.style.margin = '5px 0';
+            document.getElementById('results').appendChild(resultDiv);
+            console.log(message);
+        }
+        
+        // Test adding a flag
+        logResult('Page loaded, adding test flag...', true);
+        
+        // Try to add a flag after a short delay to ensure DOM is ready
+        setTimeout(() => {
+            // Try to detect country from browser language
+            const language = (navigator.language || navigator.userLanguage || 'en-US').split('-')[1] || 'us';
+            const countryCode = language.toLowerCase();
+            
+            // Add the flag
+            addFlag('username', countryCode);
+            
+            // Also add a known flag for testing
+            addFlag('username', 'tr');
+            
+        }, 500);
+    </script>
+</body>
+</html>

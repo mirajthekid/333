@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>typeshi.fun | Talk To Strangers Online! Real Time Anonymous Chat</title>
+    <link rel="stylesheet" href="text-glow.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Roboto Mono', monospace;
+            background-color: #0a0a0a;
+            color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        .container {
+            text-align: center;
+            max-width: 800px;
+            padding: 20px;
+        }
+        
+        .animated-text {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #f0f0f0;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+            letter-spacing: 2px;
+            animation: textFlicker 3s infinite alternate;
+            text-transform: lowercase;
+            border-right: 2px solid transparent;
+            white-space: nowrap;
+            overflow: hidden;
+            text-shadow: 0 0 5px rgba(0, 170, 255, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .animated-text {
+                font-size: 2.2rem;
+                letter-spacing: 1px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .animated-text {
+                font-size: 1.8rem;
+                letter-spacing: 0.5px;
+            }
+        }
+        
+        @keyframes textFlicker {
+            0%, 100% {
+                opacity: 1;
+                text-shadow: 0 0 5px rgba(0, 170, 255, 0.3);
+                transform: translateY(0) skewX(0);
+            }
+            25% {
+                opacity: 0.95;
+                text-shadow: 0 0 8px rgba(0, 170, 255, 0.4);
+                transform: translateY(-1px) skewX(0.5deg);
+            }
+            50% {
+                opacity: 0.9;
+                text-shadow: 0 0 10px rgba(0, 170, 255, 0.5);
+                transform: translateY(0) skewX(-0.5deg);
+            }
+            75% {
+                opacity: 0.95;
+                text-shadow: 0 0 7px rgba(0, 170, 255, 0.4);
+                transform: translateY(1px) skewX(0.5deg);
+            }
+        }
+        
+        .animated-text::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -5px;
+            width: 3px;
+            height: 100%;
+            background-color: rgba(0, 170, 255, 0.8);
+            animation: cursorBlink 0.8s infinite;
+            box-shadow: 0 0 5px rgba(0, 170, 255, 0.5);
+        }
+        
+        @keyframes cursorBlink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+        
+        .glow-text {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 8px rgba(0, 170, 255, 0.7),
+                        0 0 16px rgba(0, 170, 255, 0.5),
+                        0 0 24px rgba(0, 170, 255, 0.3);
+            margin-bottom: 1.5rem;
+            letter-spacing: 2px;
+            position: relative;
+            display: inline-block;
+            padding-right: 12px;
+        }
+        
+        .glow-text::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 15%;
+            height: 70%;
+            width: 4px;
+            background-color: rgba(0, 170, 255, 0.8);
+            box-shadow: 0 0 10px rgba(0, 170, 255, 0.8);
+            animation: cursorBlink 1s step-end infinite;
+        }
+        
+        @keyframes cursorBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        @media (max-width: 768px) {
+            .glow-text {
+                font-size: 2.5rem;
+            }
+        }
+        
+        .warning-text {
+            font-size: 1.1rem;
+            color: #f0f0f0;
+            margin: 1.5rem 0;
+            line-height: 1.6;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            opacity: 0.9;
+        }
+        
+        .terms-container {
+            max-width: 400px;
+            margin: 0.5rem 0 1rem 0;
+            margin-left: auto;
+            text-align: left;
+            padding: 0 20px 0 0;
+            display: flex;
+            justify-content: flex-end;
+            transform: translateX(30px);
+        }
+        
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            position: relative;
+            cursor: pointer;
+            font-size: 0.6rem;
+            color: #aaa;
+            line-height: 1.2;
+            user-select: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .terms-text {
+            transform: scale(0.85);
+            transform-origin: left center;
+            display: inline-block;
+            width: 100%;
+            margin-left: 12px;
+            max-width: 350px;
+        }
+        
+        .highlight {
+            color: #00aaff;
+            cursor: pointer;
+        }
+        
+        .highlight:hover {
+            text-decoration: underline;
+        }
+        
+        .terms-checkbox input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+        
+        .checkmark {
+            position: relative;
+            top: 21px;
+            left: 5px;
+            height: 12px;
+            width: 12px;
+            min-width: 12px;
+            background-color: #111;
+            border: 1px solid #00aaff;
+            margin: 0 8px 0 0;
+            border-radius: 2px;
+            flex-shrink: 0;
+            transition: background-color 0.2s;
+        }
+        
+        .terms-checkbox:hover input ~ .checkmark {
+            background-color: #222;
+        }
+        
+        .terms-checkbox input:checked ~ .checkmark {
+            background-color: #00aaff;
+        }
+        
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+        
+        .terms-checkbox input:checked ~ .checkmark {
+            background-color: #00aaff;
+        }
+        
+        .terms-checkbox input:checked ~ .checkmark:after {
+            content: "";
+            position: absolute;
+            display: block;
+            left: 4px;
+            top: 1px;
+            width: 4px;
+            height: 8px;
+            border: solid #000;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        
+        .terms-text {
+            display: inline-block;
+            vertical-align: middle;
+        }
+        
+        .animated-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: 0 0 10px rgba(0, 170, 255, 0.2) !important;
+        }
+        
+        .animated-button:disabled:hover::before {
+            left: -100%;
+        }
+        
+        .animated-button {
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: bold;
+            color: #f0f0f0;
+            background: linear-gradient(45deg, #0066cc, #00aaff);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-transform: lowercase;
+            letter-spacing: 2px;
+        }
+        
+        .animated-button:hover {
+            background: linear-gradient(45deg, #33bbff, #00aaff);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 170, 255, 0.8);
+        }
+        
+        .animated-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .animated-button:hover::before {
+            left: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="main-title" class="glow-text">typeshi.fun</div>
+        
+        <div class="terms-container" style="margin-left: auto; max-width: 400px;" role="region" aria-label="Terms and Conditions">
+            <label class="terms-checkbox" for="terms-checkbox">
+                <input 
+                    type="checkbox" 
+                    id="terms-checkbox" 
+                    aria-describedby="terms-description"
+                    aria-required="true">
+                <span class="checkmark" aria-hidden="true"></span>
+                <span class="terms-text" id="terms-description">
+                    I certify I have read and agree to the <a href="/terms.html" class="highlight" tabindex="0">Terms of Service</a> and confirm that you have read the <a href="/privacy.html" class="highlight" tabindex="0">Privacy Policy</a>. 
+                    I certify I am at least 18-years old and have reached the age of majority where I live.
+                </span>
+            </label>
+        </div>
+        
+        <div style="margin-top: 10px;" role="region" aria-label="Chat Actions">
+            <button 
+                id="enter-chat-btn" 
+                class="animated-button"
+                aria-disabled="true"
+                aria-describedby="terms-warning">
+                ENTER CHAT
+            </button>
+            <div 
+                id="terms-warning" 
+                style="color: #ff4444; margin-top: 10px; display: none; font-size: 0.8rem; text-align: center; text-shadow: none;"
+                role="alert"
+                aria-live="polite">
+                Please agree to Terms of Service and Privacy Policy
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkbox = document.getElementById('terms-checkbox');
+            const enterButton = document.getElementById('enter-chat-btn');
+            const warning = document.getElementById('terms-warning');
+            
+            // Check if required elements exist
+            if (!checkbox || !enterButton || !warning) {
+                console.error('Required elements not found');
+                return;
+            }
+            
+            let lastKeyPressTime = 0;
+            const DEBOUNCE_TIME = 1000; // 1 second
+            
+            // Initialize button state
+            function updateButtonState() {
+                const isChecked = checkbox.checked;
+                enterButton.disabled = !isChecked;
+                enterButton.setAttribute('aria-disabled', !isChecked);
+            }
+            
+            // Handle terms acceptance
+            function handleTermsAcceptance() {
+                if (checkbox.checked) {
+                    warning.style.display = 'none';
+                    enterButton.setAttribute('aria-live', 'polite');
+                    // Redirect to chat when button is clicked
+                    enterButton.onclick = function() {
+                        window.location.href = '/chat';
+                        return false;
+                    };
+                } else {
+                    enterButton.onclick = null;
+                }
+                updateButtonState();
+            }
+            
+            // Initialize button state
+            updateButtonState();
+            
+            // Add event listeners with proper cleanup references
+            function setupEventListeners() {
+                // Single event listener for checkbox changes
+                checkbox.addEventListener('change', handleTermsAcceptance);
+                
+                // Handle button click
+                enterButton.addEventListener('click', function(e) {
+                    if (!checkbox.checked) {
+                        e.preventDefault();
+                        warning.style.display = 'block';
+                        warning.setAttribute('role', 'alert');
+                        warning.setAttribute('aria-live', 'assertive');
+                    }
+                });
+                
+                // Handle keyboard events
+                document.addEventListener('keydown', handleKeyDown);
+            }
+            
+            // Handle keyboard navigation
+            function handleKeyDown(e) {
+                // Only handle Enter key
+                if (e.key !== 'Enter' && e.keyCode !== 13) return;
+                
+                e.preventDefault();
+                const now = Date.now();
+                
+                // If last key press was within the debounce time, treat as button press
+                if (now - lastKeyPressTime < DEBOUNCE_TIME) {
+                    enterButton.click();
+                } else {
+                    // Toggle the checkbox
+                    checkbox.checked = !checkbox.checked;
+                    // Trigger the change event
+                    checkbox.dispatchEvent(new Event('change'));
+                    // Focus the button for better UX
+                    enterButton.focus();
+                }
+                
+                lastKeyPressTime = now;
+            }
+            
+            // Cleanup function
+            function cleanup() {
+                checkbox.removeEventListener('change', handleTermsAcceptance);
+                document.removeEventListener('keydown', handleKeyDown);
+            }
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Focus the checkbox on load for better keyboard navigation
+            checkbox.focus();
+            
+            // Clean up event listeners if needed (e.g., for SPA navigation)
+            window.addEventListener('beforeunload', cleanup);
+        });
+    </script>
+</body>
+</html>

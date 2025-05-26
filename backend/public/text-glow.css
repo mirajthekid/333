@@ -1,0 +1,40 @@
+/* Text Glow Effect for White and Blue Text in Backend */
+
+/* White text glow effect */
+body, .container {
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.7), 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Reduced glow for grey text */
+.warning-text {
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.3), 0 0 4px rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Enhanced glow for the animated title */
+.animated-text {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.9), 0 0 20px rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Blue button glow effect */
+.animated-button {
+    text-shadow: 0 0 8px rgba(0, 170, 255, 0.8), 0 0 15px rgba(0, 170, 255, 0.6);
+    box-shadow: 0 0 20px rgba(0, 170, 255, 0.8) !important;
+}
+
+/* Enhanced glow for button on hover */
+.animated-button:hover {
+    text-shadow: 0 0 10px rgba(0, 170, 255, 0.9), 0 0 20px rgba(0, 170, 255, 0.7);
+    box-shadow: 0 0 30px rgba(0, 170, 255, 0.9) !important;
+}
+
+/* Pulsing glow animation for the title */
+@keyframes pulseGlow {
+    0% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.7), 0 0 20px rgba(255, 255, 255, 0.5); }
+    50% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.9), 0 0 30px rgba(255, 255, 255, 0.7), 0 0 40px rgba(255, 255, 255, 0.4); }
+    100% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.7), 0 0 20px rgba(255, 255, 255, 0.5); }
+}
+
+/* Apply pulsing animation to the title */
+#animated-title {
+    animation: textFlicker 4s infinite alternate, pulseGlow 3s infinite !important;
+}
