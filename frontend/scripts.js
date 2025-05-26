@@ -502,12 +502,13 @@ function handleSocketMessage(event) {
 function handleMatch(data) {
     roomId = data.roomId;
     partnerUsername = data.partnerUsername;
+    const partnerCountry = data.partnerCountry || 'us'; // Default to US flag if no country is provided
     
     // Show chat screen
     showScreen(chatScreen);
     
-    // Display system message about the match
-    displayMessage(`Connected with ${partnerUsername}`, null, 'system');
+    // Display system message about the match with country flag
+    displayMessage(`Connected with ${partnerUsername}`, null, 'system', null, partnerCountry);
     
     // Clear any previous messages
     // chatMessages.innerHTML = '';
@@ -1179,8 +1180,12 @@ function displayMessage(content, sender, type = 'message', timestamp = null) {
     messageDiv.className = `message ${type === 'system' ? 'system' : sender === username ? 'outgoing' : 'incoming'}`;
     
     if (type === 'system') {
-        // System messages are simple text
-        messageDiv.innerHTML = content; // Use innerHTML for system messages to support formatting
+        // System messages with country code support
+        let displayContent = content;
+        if (countryCode && content.startsWith('Connected with')) {
+            displayContent = `${content} <span class="flag-icon" style="display: inline-block; width: 16px; height: 12px; background: url('https://flagcdn.com/16x12/${countryCode.toLowerCase()}.png') no-repeat center/contain; vertical-align: middle; margin-left: 5px;"></span>`;
+        }
+        messageDiv.innerHTML = displayContent; // Use innerHTML for system messages to support formatting
     } else {
         // Create message wrapper for better styling
         const messageWrapper = document.createElement('div');
