@@ -98,6 +98,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!window.utils) {
         console.error('Utils module not loaded. Some security features may not work.');
     }
+    
+    // Prevent form submission
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            window.handleLogin();
+        });
+    }
     // Apply mobile viewport fixes
     preventViewportIssues();
     
@@ -327,23 +336,42 @@ document.addEventListener('DOMContentLoaded', () => {
         usernameInput.focus();
     });
 
-    // Handle login function
-    function handleLogin() {
+    // Handle login function - consolidated
+    window.handleLogin = function() {
+        // Get and validate username
         username = usernameInput.value.trim();
+        console.log(`Login attempt with username: ${username}`);
         
         if (!username) {
-            loginStatus.textContent = 'Username cannot be empty';
-            loginStatus.classList.add('error');
+            loginStatus.textContent = 'Please enter a username';
+            loginStatus.style.color = 'var(--error-color)';
             return;
+        }
+        
+        if (username.length < 3) {
+            loginStatus.textContent = 'Username must be at least 3 characters';
+            loginStatus.style.color = 'var(--error-color)';
+            return;
+        }
+        
+        // Update UI to show we're connecting
+        loginStatus.textContent = 'Connecting to server...';
+        loginStatus.style.color = 'var(--notification-color)';
+        
+        // Close any existing connection
+        if (socket) {
+            console.log('Closing existing socket connection');
+            socket.close();
         }
         
         // Show waiting screen
         showScreen(waitingScreen);
-        waitingStatus.textContent = 'Connecting to server...';
+        updateWaitingStatus('Connecting to server...');
         
-        // Initialize WebSocket connection
+        // Connect to server
+        console.log('Attempting to connect to WebSocket server...');
         connectToServer();
-    }
+    };
 
     // Connect to WebSocket server
     function connectToServer() {

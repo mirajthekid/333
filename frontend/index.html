@@ -82,13 +82,13 @@
         
         <!-- Login Screen -->
         <div id="login-screen" class="terminal-screen active">
-            <div class="login-container">
+            <form id="login-form" class="login-container">
                 <div class="terminal-prompt-row">
                     <span class="prompt-text">enter username:</span>
-                    <input type="text" id="username-input" class="terminal-input" maxlength="15" autocomplete="off" placeholder="" inputmode="text" enterkeyhint="go" autofocus>
+                    <input type="text" id="username-input" class="terminal-input" maxlength="15" autocomplete="off" placeholder="" inputmode="text" enterkeyhint="go" autofocus required>
                 </div>
                 <div class="login-status" id="login-status"></div>
-            </div>
+            </form>
         </div>
         
         <!-- Waiting Screen -->
